@@ -693,34 +693,38 @@ form.addEventListener('submit', async function(e) {
   submitBtn.disabled = true;
   submitBtn.textContent = '提交中...';
 
-  // 飞书卡片消息
+  // 飞书卡片消息（飞书卡片 v2 格式）
   const feishuMsg = {
     msg_type: 'interactive',
     card: {
+      schema: '2.0',
+      config: { update_multi: true },
       header: {
         title: { tag: 'plain_text', content: '📋 新简历订单' },
         template: 'indigo'
       },
-      elements: [
-        {
-          tag: 'div',
-          text: { tag: 'lark_md', content: [
-            `**行业：**${data.industry || '未填写'}`,
-            `**岗位：**${data.position || '未填写'}`,
-            `**联系方式：**${data.contact || '未填写'}`,
-            `**简历文件：**${data.resumeName}（${data.resumeSize}）`,
-            data.note ? `**备注：**${data.note}` : '',
-            `**时间：**${data.time}`,
-            `**来源：**${data.source}`
-          ].filter(Boolean).join('\n') }
-        },
-        {
-          tag: 'note',
-          elements: [
-            { tag: 'plain_text', content: '⚠️ 请顾问2小时内联系确认·简历文件需通过微信/飞书单独获取' }
-          ]
-        }
-      ]
+      body: {
+        direction: 'vertical',
+        elements: [
+          {
+            tag: 'markdown',
+            content: [
+              `**行业：**${data.industry || '未填写'}`,
+              `**岗位：**${data.position || '未填写'}`,
+              `**联系方式：**${data.contact || '未填写'}`,
+              `**简历文件：**${data.resumeName}（${data.resumeSize}）`,
+              data.note ? `**备注：**${data.note}` : '',
+              `**时间：**${data.time}`,
+              `**来源：**${data.source}`
+            ].filter(Boolean).join('\n')
+          },
+          { tag: 'hr' },
+          {
+            tag: 'markdown',
+            content: '⚠️ 请顾问2小时内联系确认 | 简历文件需通过微信/飞书单独获取'
+          }
+        ]
+      }
     }
   };
 
